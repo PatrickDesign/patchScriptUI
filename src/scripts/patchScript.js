@@ -113,12 +113,11 @@ const patchScript = (function (options) {
                         //IF THE PREVIOUS SIBLING IS A COMPONENT:
                             //insert a temporary <section tag> to use as a temp previous node.
                             //We'll remove it if our component is ever rendered.
-
                         var siblingIsComponent = containers.includes($(previousSibling).attr("id"));
 
                         if(siblingIsComponent)
                         {
-                            var placeHolder = $("<section></section>");
+                            var placeHolder = $("<section aria-hidden='true'></section>");
                             placeHolder.insertAfter(previousSibling);
                             previousSibling = placeHolder;
                         }

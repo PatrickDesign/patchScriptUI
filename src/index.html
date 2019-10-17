@@ -64,6 +64,8 @@
         <div class="col-sm-6" id="renderHere"></div>
         <div class="col-sm-6" id="renderHere2"></div>
         <div class="col-sm-12" id="favoriteTreats"></div>
+        <hr>
+        <div class="col-sm-12" id="powersOfTwo"></div>
       </div>
     </main><!-- /.container -->
 
@@ -82,7 +84,7 @@
     
 
   
-    patchScript.registerContainers(['renderHere', 'renderHere2', 'favoriteTreats']);
+    patchScript.registerContainers(['renderHere', 'renderHere2', 'favoriteTreats', 'powersOfTwo']);
 
     const myUsers = [
       {
@@ -118,12 +120,12 @@
       return({
         template: `<ul>
                     ${favoriteTreats.map(treat => `<li>${treat}</li>`).join('')}
-                  </ul>
-        `,
+                  </ul>`,
         behavior
       })
     }
     
+  
     
     //New Rule: all eventhandler functions will have the HTMLNode bound to 'this'    
     
@@ -134,7 +136,6 @@
           //Define component functions:
           function behavior()
           {
-            
             //our 'this' keyword is the HTMLNode that was created.  We can also access the 'user'
               //variable thanks to some cool js closures :)
             
@@ -157,16 +158,53 @@
           });
     }
     
+    function powersOfTwo()
+    {
+      
+      //define props
+      var lastPowerOfTwo = 2;
+
+      function behavior()
+      {
+        $(this).find("li").first().on("click", function(){
+
+          var lastSibling = $(this).siblings().last();
+
+          if(!lastSibling.length)
+            lastSibling = $(this);
+
+          var newPowerOfTwo = lastPowerOfTwo * 2;
+          lastPowerOfTwo = newPowerOfTwo;
+
+          $(`<li>${newPowerOfTwo}</li>`).insertAfter(lastSibling);
+
+        });
+      }
+
+      return({
+        template: `<ul>
+                    <li>${lastPowerOfTwo}</li>
+                  </ul>`,
+        behavior
+      })
+
+      
+    }
+
+
     //actually create everything:
     //for(user of myUsers)
     //{
     //  patchScript.createComponent(userListItem(user, "jsContainer"));
     //}
     patchScript.createComponent(userListItem(myUsers[0]), 'renderHere');
+    patchScript.createComponent(userListItem(myUsers[1]), 'renderHere2')
+    /*patchScript.createComponent(userListItem(myUsers[0]), 'renderHere');
 
-    patchScript.createComponent(userListItem(myUsers[1]), 'renderHere2');
+    patchScript.createComponent(userListItem(myUsers[1]), 'renderHere2');*/
 
-    patchScript.createComponent(treatList(myFavoriteTreats), 'favoriteTreats')
+    patchScript.createComponent(treatList(myFavoriteTreats), 'favoriteTreats');
+    patchScript.createComponent(powersOfTwo(), 'powersOfTwo');
 
 
     
