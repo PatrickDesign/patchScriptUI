@@ -61,6 +61,7 @@
       </div>
 
       <div class="row">
+        <!-- Component Placeholders -->
         <div class="col-sm-6" id="renderHere"></div>
         <div class="col-sm-6" id="renderHere2"></div>
         <div class="col-sm-12" id="favoriteTreats"></div>
@@ -69,22 +70,23 @@
       </div>
     </main><!-- /.container -->
 
-  <div id="jsContainer"></div>
-
 
   
 
 
   
   <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js"></script>
+
+  <!-- Framework files -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="scripts/patchScript.js"></script>
+  <!-- End Framework files -->
   <script>
 
-    
-
-  
-    patchScript.registerContainers(['renderHere', 'renderHere2', 'favoriteTreats', 'powersOfTwo']);
+    //===================================
+    // Global Data to pass to components:
+    //===================================
 
     const myUsers = [
       {
@@ -108,6 +110,11 @@
       "hot DOGS.  From costco tho."
     ]
 
+    //===================================
+    // End Global Data
+    //===================================
+
+    //Component with dynamic template.
     function treatList(favoriteTreats)
     {
       function behavior()
@@ -123,51 +130,47 @@
                   </ul>`,
         behavior
       })
-    }
-    
-  
-    
-    //New Rule: all eventhandler functions will have the HTMLNode bound to 'this'    
+    } 
     
     //Component Declaration
     function userListItem(user)
     {
-          
-          //Define component functions:
-          function behavior()
-          {
-            //our 'this' keyword is the HTMLNode that was created.  We can also access the 'user'
-              //variable thanks to some cool js closures :)
-            
-            //For each <li> in our component, let's add an onclick function that reads it's innerHTML,
-              //and alerts some prop value (just to test)
-            $(this).find('li').on("click", function(){
-              alert(`${$(this).html()} and my favorite name is ${user.firstName}`);
-            });
-            
-          }
-          
-          return ({
-            template: `<ul>
-                          <li>User's firstName: ${user.firstName}</li>
-                          <li>lastName: ${user.lastName}</li>
-                          <li>age: ${user.age}</li>
-                          <li>weight: ${user.weight}</li>
-                        </ul>`,
-            behavior
-          });
-    }
-    
-    function powersOfTwo()
-    {
+      //Define component behavior:
+      function behavior()
+      {
+        //our 'this' keyword is the HTMLNode that was created.  We can also access the 'user'
+          //variable thanks to some cool js closures :)
+        
+        //For each <li> in our component, let's add an onclick function that reads it's innerHTML,
+          //and alerts some prop value (just to test)
+        $(this).find('li').on("click", function(){
+          alert(`${$(this).html()} and my favorite name is ${user.firstName}`);
+        });
+        
+      }
       
+      return ({
+        template: `<ul>
+                      <li>User's firstName: ${user.firstName}</li>
+                      <li>lastName: ${user.lastName}</li>
+                      <li>age: ${user.age}</li>
+                      <li>weight: ${user.weight}</li>
+                    </ul>`,
+        behavior
+      });
+    }
+
+    //A component that returns it's options in an async fashion!
+    async function powersOfTwo()
+    {
       //define props
       var lastPowerOfTwo = 2;
+      var numberFact = await axios.get(`http://numbersapi.com/${lastPowerOfTwo}/trivia?noFound=default`).then(numData => numData.data);
 
       function behavior()
       {
-        $(this).find("li").first().on("click", function(){
-
+        $(this).find("li").first().on("click", async function()
+        {
           var lastSibling = $(this).siblings().last();
 
           if(!lastSibling.length)
@@ -176,37 +179,32 @@
           var newPowerOfTwo = lastPowerOfTwo * 2;
           lastPowerOfTwo = newPowerOfTwo;
 
-          $(`<li>${newPowerOfTwo}</li>`).insertAfter(lastSibling);
+          numberFact = await axios.get(`http://numbersapi.com/${newPowerOfTwo}/trivia?noFound=default`).then(numData => numData.data);
 
+          $(`<li>${numberFact}</li>`).insertAfter(lastSibling);
         });
       }
 
       return({
         template: `<ul>
-                    <li>${lastPowerOfTwo}</li>
+                    <li>${numberFact}</li>
                   </ul>`,
         behavior
       })
-
-      
     }
 
 
-    //actually create everything:
-    //for(user of myUsers)
-    //{
-    //  patchScript.createComponent(userListItem(user, "jsContainer"));
-    //}
+    patchScript.registerContainers(['renderHere', 'renderHere2', 'favoriteTreats', 'powersOfTwo']);
+
+    //Actually create components and render them.
     patchScript.createComponent(userListItem(myUsers[0]), 'renderHere');
     patchScript.createComponent(userListItem(myUsers[1]), 'renderHere2')
-    /*patchScript.createComponent(userListItem(myUsers[0]), 'renderHere');
-
-    patchScript.createComponent(userListItem(myUsers[1]), 'renderHere2');*/
-
     patchScript.createComponent(treatList(myFavoriteTreats), 'favoriteTreats');
-    patchScript.createComponent(powersOfTwo(), 'powersOfTwo');
 
-
+    //Render an async component:
+    var powerOfTwoComponent = powersOfTwo().then(twoComponent => {
+      patchScript.createComponent(twoComponent, 'powersOfTwo');
+    });
     
   </script>
 </body>
