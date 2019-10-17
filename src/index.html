@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  <!--  Meta  -->
+  <meta charset="UTF-8" />
+  <title>My New Pen!</title>
+  
+  <!--  Styles  -->
+  <link rel="stylesheet" href="styles/index.processed.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand-sm navbar-dark bg-primary mb-3">
+        <div class="container">
+            <a class="navbar-brand" href="/">Logo</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown">
+                            <a href="" class="nav-link dropdown-toggle"
+                            data-toggle="dropdown" id="navbarDropdownMenuLink">Your Ideas</a>
+                            <div class="dropdown-menu">
+                                <a href="#" class="dropdown-item">Ideas</a>
+                                <a href="#" class="dropdown-item">Add</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                        <a href="#" class="nav-link">Logout</a>
+                    </li>
+
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">Register</a>
+                        </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main role="main" class="container">
+
+      <div class="container">
+        <h1>Title of this section</h1>
+        <p class="lead">Use this document as a way to quickly start any new project.<br>
+          All you get is this text and a mostly barebones HTML document.</p>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6" id="renderHere"></div>
+        <div class="row" id="renderHere2"></div>
+      </div>
+    </main><!-- /.container -->
+
+  <div id="jsContainer"></div>
+
+
+  
+
+
+  
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="scripts/patchScript.js"></script>
+  <script>
+
+    
+
+  
+    patchScript.registerContainers(['renderHere', 'renderHere2']);
+
+    const myUsers = [
+      {
+        firstName: "Michelle",
+        lastName: "Michelleson",
+        age: 92,
+        weight: "please don't ask that"
+      },
+      {
+        firstName: "Patrick",
+        lastName: "Wees",
+        age: 21,
+        weight: "prefer not to answer"
+      }
+    ];
+
+    const myFavoriteTreats = [
+      "Sour Patch Kids",
+      "Sour Patch Parents (walmart exclusive)",
+      "Redvines (stale)",
+      "hot DOGS.  From costco tho."
+    ]
+    
+    
+    //New Rule: all eventhandler functions will have the HTMLNode bound to 'this'    
+    
+    //Component Declaration
+    function userListItem(user)
+    {
+          
+          //Define component functions:
+          function behavior()
+          {
+            
+            //our 'this' keyword is the HTMLNode that was created.  We can also access the 'user'
+              //variable thanks to some cool js closures :)
+            
+            //For each <li> in our component, let's add an onclick function that reads it's innerHTML,
+              //and alerts some prop value (just to test)
+            $(this).find('li').on("click", function(){
+              alert(`${$(this).html()} and my favorite name is ${user.firstName}`);
+            });
+            
+          }
+          
+          return ({
+            template: `<ul>
+                          <li>User's firstName: ${user.firstName}</li>
+                          <li>lastName: ${user.lastName}</li>
+                          <li>age: ${user.age}</li>
+                          <li>weight: ${user.weight}</li>
+                        </ul>`,
+            behavior
+          });
+    }
+    
+    //actually create everything:
+    //for(user of myUsers)
+    //{
+    //  patchScript.createComponent(userListItem(user, "jsContainer"));
+    //}
+    patchScript.createComponent(userListItem(myUsers[0]), 'renderHere');
+
+    //patchScript.createComponent(userListItem(myUsers[1]), 'renderHere2');
+
+
+    
+  </script>
+</body>
+</html>
