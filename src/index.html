@@ -62,7 +62,8 @@
 
       <div class="row">
         <div class="col-sm-6" id="renderHere"></div>
-        <div class="row" id="renderHere2"></div>
+        <div class="col-sm-6" id="renderHere2"></div>
+        <div class="col-sm-12" id="favoriteTreats"></div>
       </div>
     </main><!-- /.container -->
 
@@ -81,7 +82,7 @@
     
 
   
-    patchScript.registerContainers(['renderHere', 'renderHere2']);
+    patchScript.registerContainers(['renderHere', 'renderHere2', 'favoriteTreats']);
 
     const myUsers = [
       {
@@ -104,6 +105,24 @@
       "Redvines (stale)",
       "hot DOGS.  From costco tho."
     ]
+
+    function treatList(favoriteTreats)
+    {
+      function behavior()
+      {
+        $(this).find("li").on("click", function(){
+          $(this).remove();
+        });
+      }
+
+      return({
+        template: `<ul>
+                    ${favoriteTreats.map(treat => `<li>${treat}</li>`).join('')}
+                  </ul>
+        `,
+        behavior
+      })
+    }
     
     
     //New Rule: all eventhandler functions will have the HTMLNode bound to 'this'    
@@ -146,6 +165,8 @@
     patchScript.createComponent(userListItem(myUsers[0]), 'renderHere');
 
     patchScript.createComponent(userListItem(myUsers[1]), 'renderHere2');
+
+    patchScript.createComponent(treatList(myFavoriteTreats), 'favoriteTreats')
 
 
     
