@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  <!--  Meta  -->
+  <meta charset="UTF-8" />
+  <title>My New Pen!</title>
+  
+  <!--  Styles  -->
+  <link rel="stylesheet" href="styles/index.processed.css">
+</head>
+<body>
+  
+  <div id="jsContainer"></div>
+  
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="scripts/patchScript.js"></script>
+  <script>
+    const myUsers = [
+      {
+        firstName: "Michelle",
+        lastName: "Michelleson",
+        age: 92,
+        weight: "please don't ask that"
+      },
+      {
+        firstName: "Patrick",
+        lastName: "Wees",
+        age: 21,
+        weight: "prefer not to answer"
+      }
+    ];
+    
+    
+    //New Rule: all eventhandler functions will have the HTMLNode bound to 'this'    
+    
+    //Component Declaration
+    function userListItem(user, elementID)
+    {
+          
+          //Define component functions:
+          function behavior()
+          {
+            
+            //our 'this' keyword is the HTMLNode that was created.  We can also access the 'user'
+              //variable thanks to some cool js closures :)
+            
+            //For each <li> in our component, let's add an onclick function that reads it's innerHTML,
+              //and alerts some prop value (just to test)
+            $(this).find('li').on("click", function(){
+              alert(`${$(this).html()} and my favorite name is ${user.firstName}`);
+            });
+            
+          }
+          
+          
+          
+          return ({
+            template: `<li>
+                        <ul>
+                          <li>User's firstName: ${user.firstName}</li>
+                          <li>lastName: ${user.lastName}</li>
+                          <li>age: ${user.age}</li>
+                          <li>weight: ${user.weight}</li>
+                        </ul>
+                      </li>`,
+            
+            behavior,
+            elementID
+
+            // eventHandlers: 
+            //   {
+            //     click: alertMyName,
+            //     mouseover: hoverMessage
+            //   },
+            
+            
+          });
+    }
+    
+    //actually create everything:
+    for(user of myUsers)
+    {
+      patchScript.createComponent(userListItem(user, "jsContainer"));
+    }
+    
+  </script>
+</body>
+</html>
