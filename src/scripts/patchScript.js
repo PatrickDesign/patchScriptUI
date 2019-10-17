@@ -22,7 +22,8 @@ const patchScript = (function (options) {
         }
     }
 
-    this.createComponent = function (componentOptions, containerID) {
+    this.createComponent = function (componentOptions, containerID) 
+    {
         const container = document.createElement("div");
         container.innerHTML = componentOptions.template;
         const component = container.firstChild;
@@ -34,7 +35,6 @@ const patchScript = (function (options) {
         //attach component to DOM:
             //This involves reattaching the container to the dom, then rendering the component.
         this.renderComponentToDOM(component, containerID);
-
     }.bind(this);
 
     this.renderComponentToDOM = function(component, containerID)
@@ -47,7 +47,6 @@ const patchScript = (function (options) {
             //Todo:
                 //insert component into container
                 //insert container into DOM
-            
             container.elementToAttachTo.prepend(component);
 
             if(container.isFirstChild)
@@ -65,9 +64,7 @@ const patchScript = (function (options) {
                     container.previousNode.remove();
             }
         }
-
     }.bind(this)
-
     
     //Behavior:
         //Removes the container divs from the page, but keeps reference to it's position so we
@@ -75,7 +72,6 @@ const patchScript = (function (options) {
         //empty div tags.  This also allows us to put more logic into our layout as a result.
     this.registerContainers = function(containers)
     {
-
         var containersToRemove = [];
 
         //Edge Case: our container is the body element.  In this case, do nothing.
@@ -91,7 +87,6 @@ const patchScript = (function (options) {
 
                 //If the parent has more than one child, record the direct previous sibling
                     //if no direct sibling up the tree, then again, our previous node is our parent, and we are a firstChild
-                
                 var parent = container.parent(),
                     parentsChildren = parent.children();
 
@@ -132,17 +127,12 @@ const patchScript = (function (options) {
                             new Container(previousSibling, container, false, siblingIsComponent)
                         )
                     }
-                    
                 }
-
                 //remove the container from the DOM until it eventually gets rendered... maybe...
                 containersToRemove.push(container);
-            }
-                
+            } 
         }
-
         containersToRemove.forEach(el => el.remove());
-
     }.bind(this);
 
     return {
