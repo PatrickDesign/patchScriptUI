@@ -67,7 +67,8 @@
         <div class="col-sm-12" id="favoriteTreats"></div>
         <hr>
         <div class="col-sm-12" id="powersOfTwo"></div>
-        <div class="col-sm-12" id="colorChanger"></div>
+        <!--<div class="col-sm-12" id="colorChanger"></div>-->
+        <div class="col-sm-12" id="colorChangerContainer"></div>
       </div>
     </main><!-- /.container -->
 
@@ -196,6 +197,39 @@
       })
     }
 
+
+    //First example of component that renders children.
+    function colorChangerContainer(numColorChangers)
+    {
+      function behavior()
+      {
+
+        var containersToRegister = [];
+        
+        //register all containers:
+        for(var i = 0; i < numColorChangers; i++)
+        {
+          containersToRegister[i] = `${i}`;
+        }
+
+        patchScript.registerContainers(containersToRegister);
+
+        for(var i = 0; i < numColorChangers; i++){
+          patchScript.createComponent(colorChanger(), `${i}`);
+        }
+      }
+
+      return({
+        template: `<div>
+                      <h1>Here are my favorite colors... I hope you like them!</h1>
+                      ${Array(numColorChangers).join(0).split(0).map((el, index) => `<div class="col-sm-6" id=${index}></div>`).join('')}
+                  </div>
+        `,
+        behavior
+      })
+
+    }
+
     function colorChanger()
     {
 
@@ -238,17 +272,21 @@
     }
 
 
-    patchScript.registerContainers(['renderHere', 'renderHere2', 'favoriteTreats', 'powersOfTwo', 'colorChanger']);
+    patchScript.registerContainers(['renderHere', 'renderHere2', 'favoriteTreats', 'powersOfTwo', 'colorChanger', 'colorChangerContainer']);
 
     //Actually create components and render them.
     patchScript.createComponent(userListItem(myUsers[0]), 'renderHere');
     patchScript.createComponent(userListItem(myUsers[1]), 'renderHere2');
     patchScript.createComponent(treatList(myFavoriteTreats), 'favoriteTreats');
-    patchScript.createComponent(colorChanger(), 'colorChanger');
+    //patchScript.createComponent(colorChanger(), 'colorChanger');
+
     //Render an async component:
     var powerOfTwoComponent = powersOfTwo().then(twoComponent => {
       patchScript.createComponent(twoComponent, 'powersOfTwo');
     });
+
+    //Render a component with children!!
+    patchScript.createComponent(colorChangerContainer(3), 'colorChangerContainer')
     
   </script>
 </body>

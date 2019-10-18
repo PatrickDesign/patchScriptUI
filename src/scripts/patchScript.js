@@ -27,14 +27,17 @@ const patchScript = (function (options) {
         const container = document.createElement("div");
         container.innerHTML = componentOptions.template;
         const component = container.firstChild;
-
-        //Now, component.firstChild is our componentHTML.
-        //We have a DOM node.  Let's run the user's provided behavior function to apply the user's settings
-        componentOptions.behavior.call(component);
-
+        
+        //Now we have a DOM node.  
         //attach component to DOM:
             //This involves reattaching the container to the dom, then rendering the component.
         this.renderComponentToDOM(component, containerID);
+
+        //Let's run the user's provided behavior function to apply the user's settings
+        //User's behavior function runs AFTER the component is attatched to the dom.
+            //this allows for child components.
+        componentOptions.behavior.call(component);
+
     }.bind(this);
 
     this.renderComponentToDOM = function(component, containerID)
@@ -70,12 +73,12 @@ const patchScript = (function (options) {
         //Removes the container divs from the page, but keeps reference to it's position so we
         //can replace if the component gets rendered.  This way, we can keep the markup clean, and not littered with 
         //empty div tags.  This also allows us to put more logic into our layout as a result.
-    this.registerContainers = function(containers)
+    this.registerContainers = function(containerIDs)
     {
         var containersToRemove = [];
 
         //Edge Case: our container is the body element.  In this case, do nothing.
-        for(const containerID of containers)
+        for(const containerID of containerIDs)
         {
             var container = $("#" + containerID);
 
@@ -113,7 +116,7 @@ const patchScript = (function (options) {
                         //IF THE PREVIOUS SIBLING IS A COMPONENT:
                             //insert a temporary <section tag> to use as a temp previous node.
                             //We'll remove it if our component is ever rendered.
-                        var siblingIsComponent = containers.includes($(previousSibling).attr("id"));
+                        var siblingIsComponent = containerIDs.includes($(previousSibling).attr("id")) || this.containers.includes(containerObj => containerObj.elementToAttachTo.attr("id") === $(previousSibling).attr("id"));
 
                         if(siblingIsComponent)
                         {
