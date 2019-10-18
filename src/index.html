@@ -67,6 +67,7 @@
         <div class="col-sm-12" id="favoriteTreats"></div>
         <hr>
         <div class="col-sm-12" id="powersOfTwo"></div>
+        <div class="col-sm-12" id="colorChanger"></div>
       </div>
     </main><!-- /.container -->
 
@@ -173,7 +174,9 @@
         {
           var lastSibling = $(this).siblings().last();
 
+
           if(!lastSibling.length)
+
             lastSibling = $(this);
 
           var newPowerOfTwo = lastPowerOfTwo * 2;
@@ -193,14 +196,55 @@
       })
     }
 
+    function colorChanger()
+    {
 
-    patchScript.registerContainers(['renderHere', 'renderHere2', 'favoriteTreats', 'powersOfTwo']);
+      function getColor()
+      {
+        return Math.random() * Math.floor(255)
+      }
+
+      function behavior()
+      {
+
+        var rgb = {
+            r: getColor(),
+            g: getColor(),
+            b: getColor()
+        }  
+
+        $(this).css("background-color", `rgb(${rgb.r},${rgb.g}, ${rgb.b})`);
+
+        $(this).on("click", function(){
+
+          
+            rgb.r = getColor();
+            rgb.g = getColor();
+            rgb.b = getColor();     
+
+          $(this).css("background-color", `rgb(${rgb.r},${rgb.g}, ${rgb.b})`);
+
+        });
+      }
+
+      return(
+        {
+          template: `<div style="width:500px;height:500px">
+                     </div>`,
+
+          behavior
+        }
+      )
+    }
+
+
+    patchScript.registerContainers(['renderHere', 'renderHere2', 'favoriteTreats', 'powersOfTwo', 'colorChanger']);
 
     //Actually create components and render them.
     patchScript.createComponent(userListItem(myUsers[0]), 'renderHere');
-    patchScript.createComponent(userListItem(myUsers[1]), 'renderHere2')
+    patchScript.createComponent(userListItem(myUsers[1]), 'renderHere2');
     patchScript.createComponent(treatList(myFavoriteTreats), 'favoriteTreats');
-
+    patchScript.createComponent(colorChanger(), 'colorChanger');
     //Render an async component:
     var powerOfTwoComponent = powersOfTwo().then(twoComponent => {
       patchScript.createComponent(twoComponent, 'powersOfTwo');
