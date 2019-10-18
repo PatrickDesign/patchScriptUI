@@ -38,6 +38,9 @@ const patchScript = (function (options) {
             //this allows for child components.
         componentOptions.behavior.call(component);
 
+        //Return a reference to the created DOM node.
+        return component;
+
     }.bind(this);
 
     this.renderComponentToDOM = function(component, containerID)
@@ -137,9 +140,21 @@ const patchScript = (function (options) {
         containersToRemove.forEach(el => el.remove());
     }.bind(this);
 
+    //Removes the component and the container.
+    this.detatchComponent = function(componentToDetatch)
+    {
+        const containerOfComponent = $(componentToDetatch).parent();
+        const indexOfContainerToDetatch = this.containers.findIndex(el => el.elementToAttachTo.attr("id") === containerOfComponent.attr("id"));
+        this.containers.splice(indexOfContainerToDetatch, 1);
+
+        //Need to return a value here so that this can be used in a boolean expression
+        return $(containerOfComponent).remove();
+    }.bind(this);
+
     return {
         createComponent,
-        registerContainers
+        registerContainers,
+        detatchComponent
     }
 
 })();
