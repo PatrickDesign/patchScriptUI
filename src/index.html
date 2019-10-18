@@ -201,7 +201,6 @@
     //First example of component that renders children.
     function colorChangerContainer(numColorChangers)
     {
-
       var colorChangers = [];
 
       const removeFromContainer = function (componentToRemove)
@@ -218,16 +217,9 @@
         //register all containers:
         for(var i = 0; i < numColorChangers; i++)
         {
-          //containersToRegister[i] = `${i}`;
-          patchScript.registerContainers([`${i}`]);
+          patchScript.registerContainers(`${i}`);
           colorChangers.push(patchScript.createComponent(colorChanger(removeFromContainer), `${i}`));
         }
-
-        //patchScript.registerContainers(containersToRegister);
-
-        //for(var i = 0; i < numColorChangers; i++){
-        //  colorChangers.push(patchScript.createComponent(colorChanger(removeFromContainer), `${i}`));
-        //}
       }
 
       return({

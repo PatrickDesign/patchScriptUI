@@ -40,7 +40,6 @@ const patchScript = (function (options) {
 
         //Return a reference to the created DOM node.
         return component;
-
     }.bind(this);
 
     this.renderComponentToDOM = function(component, containerID)
@@ -78,6 +77,9 @@ const patchScript = (function (options) {
         //empty div tags.  This also allows us to put more logic into our layout as a result.
     this.registerContainers = function(containerIDs)
     {
+        //This line allows us to accept a single ID OR an arry of ID's.
+        containerIDs = [].concat(containerIDs || []);
+
         var containersToRemove = [];
 
         //Edge Case: our container is the body element.  In this case, do nothing.
