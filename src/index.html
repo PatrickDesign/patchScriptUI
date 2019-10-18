@@ -205,7 +205,7 @@
       {
 
         var containersToRegister = [];
-        
+
         //register all containers:
         for(var i = 0; i < numColorChangers; i++)
         {
@@ -222,7 +222,9 @@
       return({
         template: `<div>
                       <h1>Here are my favorite colors... I hope you like them!</h1>
-                      ${Array(numColorChangers).join(0).split(0).map((el, index) => `<div class="col-sm-6" id=${index}></div>`).join('')}
+                      <div class="row">
+                        ${Array(numColorChangers).join(0).split(0).map((el, index) => `<div class="col-sm-3" id=${index}></div>`).join('')}
+                      </div>
                   </div>
         `,
         behavior
@@ -263,7 +265,7 @@
 
       return(
         {
-          template: `<div style="width:500px;height:500px">
+          template: `<div style="width:250px;height:250px">
                      </div>`,
 
           behavior
@@ -286,7 +288,7 @@
     });
 
     //Render a component with children!!
-    patchScript.createComponent(colorChangerContainer(3), 'colorChangerContainer')
+    patchScript.createComponent(colorChangerContainer(48), 'colorChangerContainer')
     
   </script>
 </body>
