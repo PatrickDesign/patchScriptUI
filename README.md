@@ -1,17 +1,13 @@
 # patchScriptUI
 A UI framework for people who already know JavaScript DOM manipulation and event handling.
 
-============
 # Feature List
-============
 
 >Potential container divs are removed from the DOM until a component is rendered using that container.
 >patchScript.createComponent(componentOptions, containerID) now returns a reference to the HTMLNode of the created component.
 
 
-==============
-Things to note
-==============
+# Things to note
 
 >User's behavior() function runs AFTER the element is attatched to the DOM.  This allows for more straightfoward child-component rendering.
 	NOTE: This does not prevent the user from being able to fetch data before the component is rendered.  If any of the 'props' of the componet are
@@ -20,9 +16,7 @@ Things to note
 			THEN manipulate itself to display the fetched data.
 
 
-============
 # Requirements
-============
 
 >A component is defined as: 
 	{
@@ -38,9 +32,7 @@ This allows the componet to have 'props' and stateful behaviors.
 	i.e. a <div> or a <ul>, really any html tag will work.
 
 
-==========
 # Public API
-==========
 
 >patchScript.registerContainer(containerID)
 >patchScript.createComponent(componentOptions, anchorElementID)
