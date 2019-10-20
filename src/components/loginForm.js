@@ -59,7 +59,7 @@ export default function loginForm()
             event.preventDefault();
             if (presubmitValidation()) {
                 // $(this).submit();
-                disableForm(state);
+                // disableForm(state);
                 displaySuccess(state.usernameInput.val());
             }
         }
@@ -72,8 +72,8 @@ export default function loginForm()
 
     function disableForm(form)
     {
-        // form.usernameInput.attr("disabled", "disabled").css("display", "none");
-        // form.passwordInput.attr("disabled", "disabled").css("display", "none");
+        form.usernameInput.attr("disabled", "disabled").css("display", "none");
+        form.passwordInput.attr("disabled", "disabled").css("display", "none");
     }
 
     //A function we'll pass to our child component. 
@@ -90,7 +90,6 @@ export default function loginForm()
 
     function behavior()
     {
-
         state.usernameInput = $(this).find("input[name='username']");
         state.passwordInput = $(this).find("input[name='password']");
         state.component = this;
@@ -112,7 +111,7 @@ export default function loginForm()
             attemptSubmit(e);
         })
     }
-
+    
     return({
         template: `<form>
                     <h1>A great interactive form!</h1>
@@ -125,7 +124,7 @@ export default function loginForm()
                         <input name="password" type="password"/>
                     </div>
                     <div id="successMessage"></div>
-                    </form>`,
+                   </form>`,
         behavior
     })
 }

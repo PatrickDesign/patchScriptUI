@@ -92,6 +92,15 @@ const patchScript = (function (options) {
         //Edge Case: our container is the body element.  In this case, do nothing.
         for(const containerID of containerIDs)
         {
+
+            //This allows child containers to be rendered correctly
+            var indexOfContainer = this.containers.findIndex(el => el.elementToAttachTo.attr("id") === containerID);
+            if(indexOfContainer > -1)
+            {
+                this.containers.splice(indexOfContainer, 1);
+            }
+
+
             var container = $("#" + containerID);
 
             if(container.prop("tagName") !== "BODY")
