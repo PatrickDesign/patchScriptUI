@@ -1,7 +1,8 @@
-import powersOfTwo from './components/powersOfTwo.mjs';
-import treatList from './components/treatList.mjs';
-import userListItem from './components/userListItem.mjs';
-import colorChangerContainer from './components/colorChangerContainer.mjs';
+import powersOfTwo from './components/powersOfTwo.js';
+import treatList from './components/treatList.js';
+import userListItem from './components/userListItem.js';
+import colorChangerContainer from './components/colorChangerContainer.js';
+import loginForm from './components/loginForm.js';
 
 
 //===================================
@@ -34,7 +35,15 @@ const myFavoriteTreats = [
 // End Global Data
 //===================================
 
-patchScript.registerContainers(['renderHere', 'renderHere2', 'favoriteTreats', 'powersOfTwo', 'colorChanger', 'colorChangerContainer']);
+patchScript.registerContainers([
+    'renderHere', 
+    'renderHere2', 
+    'favoriteTreats', 
+    'powersOfTwo', 
+    'colorChanger', 
+    'colorChangerContainer',
+    'loginForm'
+]);
 
 //Actually create components and render them.
 patchScript.createComponent(userListItem(myUsers[0]), 'renderHere');
@@ -48,3 +57,4 @@ var powerOfTwoComponent = powersOfTwo().then(twoComponent => {
 
 //Render a component with children!!
 patchScript.createComponent(colorChangerContainer(48), 'colorChangerContainer')
+patchScript.createComponent(loginForm(), 'loginForm')

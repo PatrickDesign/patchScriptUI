@@ -36,6 +36,7 @@ const patchScript = (function (options) {
         //Let's run the user's provided behavior function to apply the user's settings
         //User's behavior function runs AFTER the component is attatched to the dom.
             //this allows for child components.
+        Object.defineProperty(component, "patchScriptUIContainerID", { configurable: false, writable: false, value: containerID });
         componentOptions.behavior.call(component);
 
         //Return a reference to the created DOM node.
@@ -50,23 +51,29 @@ const patchScript = (function (options) {
         if(container)
         {
             //Todo:
+                //empty container of any existing components
                 //insert component into container
                 //insert container into DOM
+            container.elementToAttachTo.html('');
             container.elementToAttachTo.prepend(component);
-
-            if(container.isFirstChild)
+            
+            //Check if container is already on the page. In this case, the 
+                //component is being re-rendered, so we don't need to attatch the container.
+            var containerNotInDOM = !$(`#${container.elementToAttachTo.attr("id")}`).length
+            if(containerNotInDOM)
             {
-                //Directly prepend to previous node:
-                container.previousNode.prepend(container.elementToAttachTo);
-            }
-            else
-            {
-                //else, we need to be inserted after a sibling.
-                container.elementToAttachTo.insertAfter(container.previousNode);
+                if (container.isFirstChild) {
+                    //Directly prepend to previous node:
+                    container.previousNode.prepend(container.elementToAttachTo);
+                }
+                else {
+                    //else, we need to be inserted after a sibling.
+                    container.elementToAttachTo.insertAfter(container.previousNode);
 
-                //If previousSibling was component, we need to remove the placeholder <section> we placed.
-                if(container.previousNodeIsComponent)
-                    container.previousNode.remove();
+                    //If previousSibling was component, we need to remove the placeholder <section> we placed.
+                    if (container.previousNodeIsComponent)
+                        container.previousNode.remove();
+                }
             }
         }
     }.bind(this)
@@ -142,15 +149,17 @@ const patchScript = (function (options) {
         containersToRemove.forEach(el => el.remove());
     }.bind(this);
 
-    //Removes the component and the container.
+    //Removes the component and container from the DOM.
+        //Then re-registers the container for possible re-use.
     this.detatchComponent = function(componentToDetatch)
     {
         const containerOfComponent = $(componentToDetatch).parent();
+        containerOfComponent.html(''); //delete the component that was being held
         const indexOfContainerToDetatch = this.containers.findIndex(el => el.elementToAttachTo.attr("id") === containerOfComponent.attr("id"));
         this.containers.splice(indexOfContainerToDetatch, 1);
 
-        //Need to return a value here so that this can be used in a boolean expression
-        return $(containerOfComponent).remove();
+        //Maybe should create a 'recycle container' function
+        this.registerContainers(containerOfComponent.attr("id"));
     }.bind(this);
 
     return {

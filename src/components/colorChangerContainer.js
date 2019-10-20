@@ -1,5 +1,4 @@
-import colorChanger from './colorChanger.mjs';
-
+import colorChanger from './colorChanger.js';
 
 //First example of component that renders children.
 export default function colorChangerContainer(numColorChangers) {
