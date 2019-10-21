@@ -20,7 +20,8 @@ export default function colorChanger(props) {
         $(this).on("click", function () {
 
             numberOfTimesClicked++;
-            if (numberOfTimesClicked === 5) {
+            if (numberOfTimesClicked === 5) 
+            {
                 return props.removeFromContainer(this);
             }
 
@@ -58,13 +59,11 @@ export default function colorChanger(props) {
     {
         if(props.removeFromContainer)
         {
-            randomColorMode = randomColorMode.bind(this);
-            randomColorMode();
+            randomColorMode.call(this);
         }
         else if(props.colorOptions)
         {
-            pickFromColorOptionsMode = pickFromColorOptionsMode.bind(this);
-            pickFromColorOptionsMode();
+            pickFromColorOptionsMode.call(this);
         }
     }
 

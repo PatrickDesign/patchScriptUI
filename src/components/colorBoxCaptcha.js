@@ -17,7 +17,7 @@ export default function colorBoxCaptcha(onSuccessFunc)
 
     const colorOptions = ['red', 'turquoise', 'pink', 'red'];
 
-    function boxChangedColor(newColor)
+    function boxChangedColor()
     {
         var captchaIsValid = true,
             firstColor = $(state.colorBoxes[0]).css("background-color"),
