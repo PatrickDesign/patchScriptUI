@@ -59,3 +59,5 @@ var powerOfTwoComponent = powersOfTwo().then(twoComponent => {
 //Render a component with children!!
 patchScript.createComponent(colorChangerContainer(48), 'colorChangerContainer')
 patchScript.createComponent(loginForm(), 'loginForm');
+patchScript.createComponent(loginForm(), 'anotherLogin');
+

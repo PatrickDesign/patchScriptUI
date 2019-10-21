@@ -16,7 +16,7 @@ export default function colorChangerContainer(numColorChangers) {
         //register all containers:
         for (var i = 0; i < numColorChangers; i++) {
             patchScript.registerContainers(`${i}`);
-            colorChangers.push(patchScript.createComponent(colorChanger(removeFromContainer), `${i}`));
+            colorChangers.push(patchScript.createComponent(colorChanger({removeFromContainer}), `${i}`));
         }
     }
 

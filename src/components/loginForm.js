@@ -1,13 +1,19 @@
 import successMessage from './successMessage.js';
+import colorBoxCaptcha from './colorBoxCaptcha.js';
 
 export default function loginForm()
 {
-
     var state = {
         usernameInput: {},
         passwordInput: {},
+        form: {},
+        successMessageComponent: {},
+        colorBoxCaptchaComponent: {},
         component : {}
     }
+
+    const successMessageUniqueID = patchScript.getUniqueID(),
+          colorBoxCaptchaUniqueID = patchScript.getUniqueID();
     
     function usernameInstaCheck(input)
     {
@@ -58,9 +64,7 @@ export default function loginForm()
         if (event.keyCode === 13) {
             event.preventDefault();
             if (presubmitValidation()) {
-                // $(this).submit();
-                // disableForm(state);
-                displaySuccess(state.usernameInput.val());
+                displayCaptcha();
             }
         }
     }
@@ -70,10 +74,17 @@ export default function loginForm()
         return usernameInstaCheck(state.usernameInput) && passwordInstaCheck(state.passwordInput)
     }
 
-    function disableForm(form)
+    function displayCaptcha()
     {
-        form.usernameInput.attr("disabled", "disabled").css("display", "none");
-        form.passwordInput.attr("disabled", "disabled").css("display", "none");
+        disableForm();
+        state.colorBoxCaptchaComponent = patchScript.createComponent(colorBoxCaptcha(displaySuccess), colorBoxCaptchaUniqueID);
+        $("#" + state.colorBoxCaptchaComponent.patchScriptUIContainerID).fadeIn();
+    }
+
+    function disableForm()
+    {
+        state.usernameInput.attr("disabled", "disabled");
+        state.passwordInput.attr("disabled", "disabled");
     }
 
     //A function we'll pass to our child component. 
@@ -83,19 +94,27 @@ export default function loginForm()
         patchScript.createComponent(loginForm(), state.component.patchScriptUIContainerID)
     }
 
-    function displaySuccess(username)
+    //This is called when the captcha is successfully filled out
+    function displaySuccess()
     {
-        patchScript.createComponent(successMessage(username, onSuccessMessageClose), 'successMessage');
+        //Let's do a bit of animation
+        //fade out the captcha and form
+        $("#" + state.colorBoxCaptchaComponent.patchScriptUIContainerID).fadeOut();
+        $(state.form).fadeOut("fast", function(){
+            state.successMessageComponent = patchScript.createComponent(successMessage(state.usernameInput.val(), onSuccessMessageClose), successMessageUniqueID);
+            $("#" + state.successMessageComponent.patchScriptUIContainerID).fadeIn();       
+        })
     }
 
     function behavior()
     {
         state.usernameInput = $(this).find("input[name='username']");
         state.passwordInput = $(this).find("input[name='password']");
+        state.form = $(this).find("form");
         state.component = this;
 
-        //Register our potential successMessage container
-        patchScript.registerContainers('successMessage');
+        //Register our potential successMessage and captcha containers
+        patchScript.registerContainers([successMessageUniqueID, colorBoxCaptchaUniqueID]);
 
         state.usernameInput.on("keyup", function(){
             usernameInstaCheck(state.usernameInput);
@@ -107,24 +126,27 @@ export default function loginForm()
         })
 
         //listen for a enter press to submit the form
-        $(this).on("keydown", function(e){
+        $(state.form).on("keydown", function(e){
             attemptSubmit(e);
         })
     }
-    
+
     return({
-        template: `<form>
-                    <h1>A great interactive form!</h1>
-                    <div>
-                        <label for="username"><b>Username</b></label>
-                        <input name="username" type="text"/>
-                    </div>
-                    <div>
-                        <label for="password"><b>Password</b></label>
-                        <input name="password" type="password"/>
-                    </div>
-                    <div id="successMessage"></div>
-                   </form>`,
+        template: `<div style="padding:20px; display:inline-block; box-shadow: 5px 5px 5px rgba(68,68,68,0.6); border: 2px solid black; margin:30px">
+                    <form>
+                        <h1 style="color:red">A great interactive form!</h1>
+                        <div>
+                            <label for="username"><b>Username</b></label>
+                            <input name="username" type="text"/>
+                        </div>
+                        <div>
+                            <label for="password"><b>Password</b></label>
+                            <input name="password" type="password"/>
+                        </div>
+                    </form>
+                    <div id=${colorBoxCaptchaUniqueID} style="display:none"></div>
+                    <div id=${successMessageUniqueID} style="display:none"></div>
+                   </div>`,
         behavior
     })
 }

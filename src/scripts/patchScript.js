@@ -171,10 +171,16 @@ const patchScript = (function (options) {
         this.registerContainers(containerOfComponent.attr("id"));
     }.bind(this);
 
+    this.getUniqueID = function()
+    {
+        return Math.random().toString(36).substring(2) + Date.now().toString(36);
+    }
+
     return {
         createComponent,
         registerContainers,
-        detatchComponent
+        detatchComponent,
+        getUniqueID
     }
 
 })();
