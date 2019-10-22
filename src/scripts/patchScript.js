@@ -22,6 +22,17 @@ const patchScript = (function (options) {
         }
     }
 
+    //DOM utility functions:
+    this.insertAfter = function(elementToInsert, referenceElement)
+    {
+        referenceElement.parentNode.insertBefore(elementToInsert, referenceElement.nextSibling);
+    }
+
+    this.insertBefore = function(elementToInsert, referenceElement)
+    {
+        referenceElement.parentNode.insertBefore(elementToInsert, referenceElement);
+    }
+    
     this.createComponent = function (componentOptions, containerID) 
     {
         const container = document.createElement("div");
@@ -46,7 +57,7 @@ const patchScript = (function (options) {
     this.renderComponentToDOM = function(component, containerID)
     {
         //First, find the container in this.containers.
-        const container = this.containers.find(container => container.elementToAttachTo.attr("id") === containerID);
+        const container = this.containers.find(container => container.elementToAttachTo.id === containerID);
 
         if(container)
         {
@@ -54,12 +65,12 @@ const patchScript = (function (options) {
                 //empty container of any existing components
                 //insert component into container
                 //insert container into DOM
-            container.elementToAttachTo.html('');
-            container.elementToAttachTo.prepend(component);
+            container.elementToAttachTo.innerHTML = '';
+            container.elementToAttachTo.appendChild(component);
             
             //Check if container is already on the page. In this case, the 
                 //component is being re-rendered, so we don't need to attatch the container.
-            var containerNotInDOM = !$(`#${container.elementToAttachTo.attr("id")}`).length
+            var containerNotInDOM = !document.getElementById(container.elementToAttachTo.id);
             if(containerNotInDOM)
             {
                 if (container.isFirstChild) {
@@ -68,11 +79,11 @@ const patchScript = (function (options) {
                 }
                 else {
                     //else, we need to be inserted after a sibling.
-                    container.elementToAttachTo.insertAfter(container.previousNode);
+                    this.insertAfter(container.elementToAttachTo, container.previousNode);
 
                     //If previousSibling was component, we need to remove the placeholder <section> we placed.
                     if (container.previousNodeIsComponent)
-                        container.previousNode.remove();
+                        container.previousNode.parentElement.removeChild(container.previousNode);
                 }
             }
         }
@@ -94,16 +105,16 @@ const patchScript = (function (options) {
         {
 
             //This allows child containers to be rendered correctly
-            var indexOfContainer = this.containers.findIndex(el => el.elementToAttachTo.attr("id") === containerID);
+            var indexOfContainer = this.containers.findIndex(el => el.elementToAttachTo.id === containerID);
             if(indexOfContainer > -1)
             {
                 this.containers.splice(indexOfContainer, 1);
             }
 
 
-            var container = $("#" + containerID);
+            var container = document.getElementById(containerID);
 
-            if(container.prop("tagName") !== "BODY")
+            if(container.tagName !== "BODY")
             {
                 //First, find previous node
 
@@ -111,8 +122,8 @@ const patchScript = (function (options) {
 
                 //If the parent has more than one child, record the direct previous sibling
                     //if no direct sibling up the tree, then again, our previous node is our parent, and we are a firstChild
-                var parent = container.parent(),
-                    parentsChildren = parent.children();
+                var parent = container.parentElement,
+                    parentsChildren = parent.children;
 
                 if(parentsChildren.length === 1)
                 {
@@ -123,8 +134,8 @@ const patchScript = (function (options) {
                 }
                 else
                 {
-                    var previousSibling = container.prev();
-                    if(previousSibling.length === 0)
+                    var previousSibling = container.previousElementSibling;
+                    if(!previousSibling)
                     {
                         //Our previousNode is the parent.
                         this.containers.push(
@@ -137,12 +148,13 @@ const patchScript = (function (options) {
                         //IF THE PREVIOUS SIBLING IS A COMPONENT:
                             //insert a temporary <section tag> to use as a temp previous node.
                             //We'll remove it if our component is ever rendered.
-                        var siblingIsComponent = containerIDs.includes($(previousSibling).attr("id")) || this.containers.includes(containerObj => containerObj.elementToAttachTo.attr("id") === $(previousSibling).attr("id"));
+                        var siblingIsComponent = containerIDs.includes(previousSibling.id) || this.containers.includes(containerObj => containerObj.elementToAttachTo.id === previousSibling.id);
 
                         if(siblingIsComponent)
                         {
-                            var placeHolder = $("<section aria-hidden='true'></section>");
-                            placeHolder.insertAfter(previousSibling);
+                            var placeHolder = document.createElement('section');
+                            placeHolder.setAttribute('aria-hidden', 'true');
+                            this.insertAfter(placeHolder, previousSibling);
                             previousSibling = placeHolder;
                         }
 
@@ -155,20 +167,20 @@ const patchScript = (function (options) {
                 containersToRemove.push(container);
             } 
         }
-        containersToRemove.forEach(el => el.remove());
+        containersToRemove.forEach(el => el.parentElement.removeChild(el));
     }.bind(this);
 
     //Removes the component and container from the DOM.
         //Then re-registers the container for possible re-use.
     this.detatchComponent = function(componentToDetatch)
     {
-        const containerOfComponent = $(componentToDetatch).parent();
-        containerOfComponent.html(''); //delete the component that was being held
-        const indexOfContainerToDetatch = this.containers.findIndex(el => el.elementToAttachTo.attr("id") === containerOfComponent.attr("id"));
+        const containerOfComponent = componentToDetatch.parentElement;
+        containerOfComponent.innerHTML = ''; //delete the component that was being held
+        const indexOfContainerToDetatch = this.containers.findIndex(el => el.elementToAttachTo.id === containerOfComponent.id);
         this.containers.splice(indexOfContainerToDetatch, 1);
 
         //Maybe should create a 'recycle container' function
-        this.registerContainers(containerOfComponent.attr("id"));
+        this.registerContainers(containerOfComponent.id);
     }.bind(this);
 
     this.getUniqueID = function()
