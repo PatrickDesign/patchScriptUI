@@ -1,5 +1,6 @@
 # patchScriptUI
 A UI framework for people who already know JavaScript DOM manipulation and event handling.
+[Click here to view a brief tutorial with examples!](https://medium.com/@patrickwees/flexible-javascript-components-w-o-the-overhead-b0c5c0dcb42e?source=friends_link&sk=99c4370a3ae8aa2c7f990401185240a3)
 
 # Feature List
 
@@ -39,3 +40,4 @@ This allows the componet to have 'props' and stateful behaviors.
   * patchScript.registerContainer(containerID)
   * patchScript.createComponent(componentOptions, anchorElementID)
   * patchScript.detatchComponent(component)
+  * patchScript.getUniqueID()
