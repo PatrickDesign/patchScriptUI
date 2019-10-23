@@ -2,6 +2,8 @@
 A UI framework for people who already know JavaScript DOM manipulation and event handling.
 [Click here to view a brief tutorial with examples!](https://medium.com/@patrickwees/flexible-javascript-components-w-o-the-overhead-b0c5c0dcb42e?source=friends_link&sk=99c4370a3ae8aa2c7f990401185240a3)
 
+The example files are using the new js module syntax, so you may need to serve the directory locally to view them.  I use [npm serve](https://www.npmjs.com/package/serve).
+
 # Feature List
 
   * Potential container divs are removed from the DOM until a component is rendered using that container.
@@ -19,6 +21,7 @@ A UI framework for people who already know JavaScript DOM manipulation and event
   ```javascript
   	patchScript.createComponent(componentFunctionName(), this.patchScriptUIContainerID)
   ```
+  * Once a container is registered, it's remembered.  This means that you can call ```patchScript.detatch('myContainerID')``` and both the component and the container will be removed from the DOM.  You can then render another component into the ```'myContainerID'``` container without having to re-register it.
 
 
 # Requirements
@@ -42,6 +45,6 @@ This allows the componet to have 'props' and stateful behaviors.
 # Public API
 
   * patchScript.registerContainer(containerID)
-  * patchScript.createComponent(componentOptions, anchorElementID)
-  * patchScript.detatchComponent(component)
+  * patchScript.createComponent(componentOptions, containerID)
+  * patchScript.detatch(containerID)
   * patchScript.getUniqueID()
