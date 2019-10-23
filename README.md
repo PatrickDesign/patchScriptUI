@@ -23,7 +23,7 @@ A UI framework for people who already know JavaScript DOM manipulation and event
   ```javascript
 	{
 		template: htmlTemplateLiteral
-		bahavior: function()
+		behavior: function()
 	}
   ```
 
