@@ -18,7 +18,7 @@ const myUsers = [
     },
     {
         firstName: "Patrick",
-        lastName: "Wees",
+        lastName: "W",
         age: 21,
         weight: "prefer not to answer"
     }

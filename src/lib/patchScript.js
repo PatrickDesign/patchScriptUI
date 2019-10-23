@@ -73,17 +73,21 @@ const patchScript = (function (options) {
             var containerNotInDOM = !document.getElementById(container.elementToAttachTo.id);
             if(containerNotInDOM)
             {
-                if (container.isFirstChild) {
+                if (container.isFirstChild) 
+                {
                     //Directly prepend to previous node:
                     container.previousNode.prepend(container.elementToAttachTo);
                 }
-                else {
+                else 
+                {
                     //else, we need to be inserted after a sibling.
                     this.insertAfter(container.elementToAttachTo, container.previousNode);
 
                     //If previousSibling was component, we need to remove the placeholder <section> we placed.
                     if (container.previousNodeIsComponent)
+                    {
                         container.previousNode.parentElement.removeChild(container.previousNode);
+                    }
                 }
             }
         }
@@ -123,9 +127,11 @@ const patchScript = (function (options) {
                 //If the parent has more than one child, record the direct previous sibling
                     //if no direct sibling up the tree, then again, our previous node is our parent, and we are a firstChild
                 var parent = container.parentElement,
-                    parentsChildren = parent.children;
+                    parentsChildren = parent.children,
+                    previousSibling = container.previousElementSibling;
 
-                if(parentsChildren.length === 1)
+                //If we are an only child, or the first child.
+                if(parentsChildren.length === 1 || !previousSibling)
                 {
                     //Our previousNode is the parent.
                     this.containers.push(
@@ -134,34 +140,24 @@ const patchScript = (function (options) {
                 }
                 else
                 {
-                    var previousSibling = container.previousElementSibling;
-                    if(!previousSibling)
-                    {
-                        //Our previousNode is the parent.
-                        this.containers.push(
-                            new Container(parent, container, true, false)
-                        )
-                    }
-                    else
-                    {
-                        //We have a previous sibling.
-                        //IF THE PREVIOUS SIBLING IS A COMPONENT:
-                            //insert a temporary <section tag> to use as a temp previous node.
-                            //We'll remove it if our component is ever rendered.
-                        var siblingIsComponent = containerIDs.includes(previousSibling.id) || this.containers.includes(containerObj => containerObj.elementToAttachTo.id === previousSibling.id);
+                    //We have a previous sibling.
+                    //IF THE PREVIOUS SIBLING IS A COMPONENT:
+                        //insert a temporary <section> tag to use as a temp previous node.
+                        //We'll remove it if our component is ever rendered.
+                    var siblingIsComponent = containerIDs.includes(previousSibling.id) || this.containers.includes(containerObj => containerObj.elementToAttachTo.id === previousSibling.id);
 
-                        if(siblingIsComponent)
-                        {
-                            var placeHolder = document.createElement('section');
-                            placeHolder.setAttribute('aria-hidden', 'true');
-                            this.insertAfter(placeHolder, previousSibling);
-                            previousSibling = placeHolder;
-                        }
-
-                        this.containers.push(
-                            new Container(previousSibling, container, false, siblingIsComponent)
-                        )
+                    if(siblingIsComponent)
+                    {
+                        var placeHolder = document.createElement('section');
+                        placeHolder.setAttribute('aria-hidden', 'true');
+                        
+                        this.insertAfter(placeHolder, previousSibling);
+                        previousSibling = placeHolder;
                     }
+
+                    this.containers.push(
+                        new Container(previousSibling, container, false, siblingIsComponent)
+                    )
                 }
                 //remove the container from the DOM until it eventually gets rendered... maybe...
                 containersToRemove.push(container);
@@ -188,11 +184,11 @@ const patchScript = (function (options) {
         return Math.random().toString(36).substring(2) + Date.now().toString(36);
     }
 
-    return {
+    return ({
         createComponent,
         registerContainers,
         detatchComponent,
         getUniqueID
-    }
+    })
 
 })();
