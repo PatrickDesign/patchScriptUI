@@ -15,6 +15,11 @@ A UI framework for people who already know JavaScript DOM manipulation and event
 		async, then the component will not be rendered until those have been resolved.
 		Alternatively, the user could return a template of 'placeholder' data, and in the behavior() function could start fetching data in the background,
 			THEN manipulate itself to display the fetched data.
+  * The property ```.patchScriptUIContainerID``` is provided on the component element.  This allows you to rerender a component by calling:
+  ```javascript
+  	patchScript.createComponent(componentFunctionName(), this.patchScriptUIContainerID)
+  ```
+  from inside of the component.
 
 
 # Requirements
@@ -22,7 +27,7 @@ A UI framework for people who already know JavaScript DOM manipulation and event
   * A component is defined as:
   ```javascript
 	{
-		template: htmlTemplateLiteral
+		template: htmlTemplateLiteral,
 		behavior: function()
 	}
   ```
