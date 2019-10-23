@@ -168,16 +168,17 @@ const patchScript = (function (options) {
 
     //Removes the component and container from the DOM.
         //Then re-registers the container for possible re-use.
-    this.detatchComponent = function(componentToDetatch)
+    this.detatch = function (containerID) 
     {
-        const containerOfComponent = componentToDetatch.parentElement;
+        const containerOfComponent = document.getElementById(containerID);
         containerOfComponent.innerHTML = ''; //delete the component that was being held
         const indexOfContainerToDetatch = this.containers.findIndex(el => el.elementToAttachTo.id === containerOfComponent.id);
         this.containers.splice(indexOfContainerToDetatch, 1);
 
         //Maybe should create a 'recycle container' function
-        this.registerContainers(containerOfComponent.id);
+        this.registerContainers(containerID);
     }.bind(this);
+
 
     this.getUniqueID = function()
     {
@@ -187,7 +188,7 @@ const patchScript = (function (options) {
     return ({
         createComponent,
         registerContainers,
-        detatchComponent,
+        detatch,
         getUniqueID
     })
 

@@ -5,7 +5,7 @@ export default function colorChangerContainer(numColorChangers) {
     var colorChangers = [];
 
     const removeFromContainer = function (componentToRemove) {
-        const indexOfComponent = colorChangers.findIndex(el => el === componentToRemove && patchScript.detatchComponent(componentToRemove));
+        const indexOfComponent = colorChangers.findIndex(el => el === componentToRemove && patchScript.detatch(componentToRemove.patchScriptUIContainerID));
         if(indexOfComponent > -1)
             colorChangers.splice(indexOfComponent, 1);
     };
