@@ -70,7 +70,9 @@ Then we can render the component like:
 ```
 patchScript.createComponent(colorChanger(), 'myContainer')
 ```
+Result:
 
+![](media/colorChanger.gif)
 
 # Public API
 
